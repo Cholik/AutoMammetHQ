@@ -18,9 +18,9 @@ namespace AutoMammetHQ
         private readonly Configuration config;
         private readonly Handicraft[] handicrafts;
 
-        public Reader(DalamudPluginInterface pluginInterface, Plugin plugin)
+        public Reader(Plugin plugin)
         {
-            Dalamud.Initialize(pluginInterface);
+            Dalamud.Initialize(plugin.PluginInterface);
             SignatureHelper.Initialise(this);
 
             this.config = plugin.Configuration;

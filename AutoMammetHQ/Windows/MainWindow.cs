@@ -11,15 +11,15 @@ namespace AutoMammetHQ.Windows;
 public class MainWindow : Window, IDisposable
 {
     private readonly Reader reader;
-    private readonly Plugin plugin;
-    private readonly Configuration config;
+
+    private bool supplyAndDemandAvailable = false;
 
     private Handicraft[] handicrafts;
     private ScheduleHandler scheduleHandler;
     private IEnumerable<Schedule>? schedules = null;
 
-    public MainWindow(Plugin plugin, Reader reader, string handicraftJsonPath) : base(
-        "AutoMammetHQ - Main Window", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
+    public MainWindow(Plugin plugin) : base(
+        "AutoMammetHQ", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
     {
         this.SizeConstraints = new WindowSizeConstraints
         {
@@ -27,9 +27,7 @@ public class MainWindow : Window, IDisposable
             MaximumSize = new Vector2(float.MaxValue, float.MaxValue)
         };
 
-        this.reader = reader;
-        this.plugin = plugin;
-        this.config = plugin.Configuration;
+        this.reader = new Reader(plugin);
     }
 
     public void Dispose()
@@ -39,13 +37,18 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (!reader.IsSupplyAndDemandAvailable())
+        if (!supplyAndDemandAvailable)
         {
             ImGui.Text("Please open the supply and demand window in order to load the current supply and demand for export.");
 
             ImGui.Spacing();
             ImGui.Separator();
             ImGui.Spacing();
+
+            if (reader.IsSupplyAndDemandAvailable())
+            {
+                supplyAndDemandAvailable = true;
+            }
         }
         else
         {
@@ -66,7 +69,7 @@ public class MainWindow : Window, IDisposable
             {
                 var schedule = schedules.OrderByDescending(x => x.Score).First();
 
-                DrawSchedules(schedule);
+                DrawSchedule(schedule);
 
                 ImGui.Spacing();
                 ImGui.Separator();
@@ -75,7 +78,7 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    private void DrawSchedules(Schedule schedule)
+    private void DrawSchedule(Schedule schedule)
     {
         ImGui.Text($"Score: {schedule.Score:0}");
 

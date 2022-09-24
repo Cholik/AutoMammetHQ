@@ -4,7 +4,7 @@
     <Authors>Offworld Mining Company</Authors>
     <Company>N/A</Company>
     <Version>1.0.0.0</Version>
-    <Description>Provides an easy copy and pastable CSV format you can use for island sanctuary spreadsheets.</Description>
+    <Description>Calculates the optimal schedule for your Island Sanctuary workshops.</Description>
     <Copyright>N/A</Copyright>
     <PackageProjectUrl>https://github.com/OffworldMiningCompany/AutoMammetHQ</PackageProjectUrl>
   </PropertyGroup>

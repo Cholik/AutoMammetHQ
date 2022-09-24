@@ -13,7 +13,7 @@ namespace AutoMammetHQ
 
         public string Name => "AutoMammetHQ";
 
-        private DalamudPluginInterface PluginInterface { get; init; }
+        internal DalamudPluginInterface PluginInterface { get; init; }
 
         private CommandManager CommandManager { get; init; }
 
@@ -31,10 +31,7 @@ namespace AutoMammetHQ
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             this.Configuration.Initialize(this.PluginInterface);
 
-            var handicraftJsonPath = Path.Combine(PluginInterface.AssemblyLocation.Directory?.FullName!, "Handicrafts.json");
-
-            var reader = new Reader(this.PluginInterface, this);
-            WindowSystem.AddWindow(new MainWindow(this, reader, handicraftJsonPath));
+            WindowSystem.AddWindow(new MainWindow(this));
 
             this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
             {
@@ -52,7 +49,7 @@ namespace AutoMammetHQ
 
         private void OnCommand(string command, string args)
         {
-            var window = WindowSystem.GetWindow("AutoMammetHQ - Main Window");
+            var window = WindowSystem.GetWindow("AutoMammetHQ");
 
             if (window != null)
             {
