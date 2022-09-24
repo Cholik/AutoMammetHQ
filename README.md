@@ -5,6 +5,6 @@ Calculates the optimal schedule for the next cycle of your Island Sanctuary Work
 
 Use the `/mammethq` command to bring up the main window.
 
-This can be used by installing [XIVLauncher](https://github.com/goatcorp/FFXIVQuickLauncher) and using the Dalamud plugin system. It is currently in the testing branch.
+This can be used by installing [XIVLauncher](https://github.com/goatcorp/FFXIVQuickLauncher) and using the Dalamud plugin system.
 
 Based on the [AutoMammet](https://github.com/Rietty/AutoMammet.git) plugin by Rietty.
