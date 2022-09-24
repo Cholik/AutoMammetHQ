@@ -59,8 +59,6 @@ public class MainWindow : Window, IDisposable
         }
         else
         {
-            ImGui.Text($"Next Update: {nextSupplyAndDemandUpdateTime} ({nextSupplyAndDemandUpdateTime.ToLocalTime()})");
-
             if (ImGui.Button("Get schedule for tomorrow"))
             {
                 var supplyAndDemand = reader.GetSupplyAndDemand();
