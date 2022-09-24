@@ -12,7 +12,8 @@ public class MainWindow : Window, IDisposable
 {
     private readonly Reader reader;
 
-    private DateTime nextSupplyAndDemandUpdateTime;
+    private DateTime nextSupplyAndDemandUpdateTime = DateTime.UtcNow;
+    private bool schedulesUpdated = false;
 
     private Handicraft[] handicrafts;
     private ScheduleHandler scheduleHandler;
@@ -28,7 +29,6 @@ public class MainWindow : Window, IDisposable
         };
 
         this.reader = new Reader(plugin);
-        nextSupplyAndDemandUpdateTime = DateTime.UtcNow;
     }
 
     public void Dispose()
@@ -54,6 +54,7 @@ public class MainWindow : Window, IDisposable
                 if (DateTime.UtcNow.Hour > 8)
                 {
                     nextSupplyAndDemandUpdateTime = nextSupplyAndDemandUpdateTime.AddDays(1);
+                    schedulesUpdated = false;
                 }
             }
         }
@@ -66,13 +67,19 @@ public class MainWindow : Window, IDisposable
 
                 scheduleHandler = new ScheduleHandler(handicrafts, supplyAndDemand);
                 schedules = scheduleHandler.GetSchedules();
+
+                schedulesUpdated = true;
             }
 
             ImGui.SameLine();
 
             ImGui.Text("(This might take some time.)");
 
-            if (schedules != null)
+            if (schedulesUpdated && schedules == null)
+            {
+                ImGui.Text("Tomorrow is a rest day.");
+            }
+            else if (schedules != null)
             {
                 var schedule = schedules.OrderByDescending(x => x.Score).First();
 

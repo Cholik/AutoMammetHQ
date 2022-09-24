@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMammetHQ.Data;
@@ -37,8 +38,15 @@ namespace AutoMammetHQ
             currentGroove = 0;
         }
 
-        internal IEnumerable<Schedule> GetSchedules()
+        internal IEnumerable<Schedule>? GetSchedules()
         {
+            var cycle = GetCycle(DateTime.UtcNow);
+
+            if (cycle == 7)
+            {
+                return null;
+            }
+
             var schedules = new List<Schedule>();
 
             foreach (var handicraft in handicrafts)
@@ -81,6 +89,11 @@ namespace AutoMammetHQ
             }
 
             return schedules;
+        }
+
+        int GetCycle(DateTime time)
+        {
+            return (int)(time.AddDays(-2).AddHours(-8).DayOfWeek) + 1;
         }
 
         private decimal ComputeScore(List<Handicraft> handicrafts)
