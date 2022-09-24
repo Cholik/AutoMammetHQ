@@ -12,7 +12,7 @@ public class MainWindow : Window, IDisposable
 {
     private readonly Reader reader;
 
-    private bool supplyAndDemandAvailable = false;
+    private DateTime nextSupplyAndDemandUpdateTime;
 
     private Handicraft[] handicrafts;
     private ScheduleHandler scheduleHandler;
@@ -28,6 +28,7 @@ public class MainWindow : Window, IDisposable
         };
 
         this.reader = new Reader(plugin);
+        nextSupplyAndDemandUpdateTime = DateTime.UtcNow;
     }
 
     public void Dispose()
@@ -37,7 +38,7 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        if (!supplyAndDemandAvailable)
+        if (DateTime.UtcNow >= nextSupplyAndDemandUpdateTime)
         {
             ImGui.Text("Please open the supply and demand window in order to load the current supply and demand for export.");
 
@@ -47,11 +48,19 @@ public class MainWindow : Window, IDisposable
 
             if (reader.IsSupplyAndDemandAvailable())
             {
-                supplyAndDemandAvailable = true;
+                nextSupplyAndDemandUpdateTime = DateTime.SpecifyKind(
+                    new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 8, 0, 0), DateTimeKind.Utc);
+
+                if (DateTime.UtcNow.Hour > 8)
+                {
+                    nextSupplyAndDemandUpdateTime = nextSupplyAndDemandUpdateTime.AddDays(1);
+                }
             }
         }
         else
         {
+            ImGui.Text($"Next Update: {nextSupplyAndDemandUpdateTime} ({nextSupplyAndDemandUpdateTime.ToLocalTime()})");
+
             if (ImGui.Button("Get schedule for tomorrow"))
             {
                 var supplyAndDemand = reader.GetSupplyAndDemand();
