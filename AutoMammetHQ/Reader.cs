@@ -17,6 +17,23 @@ namespace AutoMammetHQ
 
         private readonly Configuration config;
         private readonly Handicraft[] handicrafts;
+        private readonly InventoryItem[] inventoryItems;
+
+        internal Handicraft[] Handicrafts
+        {
+            get
+            {
+                return handicrafts;
+            }
+        }
+
+        internal InventoryItem[] InventoryItems
+        {
+            get
+            {
+                return inventoryItems;
+            }
+        }
 
         public Reader(Plugin plugin)
         {
@@ -30,13 +47,22 @@ namespace AutoMammetHQ
 
             var handicraftCategories = Dalamud.GameData
                 .GetExcelSheet<MJICraftworksObjectTheme>()!
-                .Select(x => new Category(x.RowId, x.Unknown0.ToString()))
+                .Select(x => new HandicraftCategory(x.RowId, x.Unknown0.ToString()))
                 .ToList();
 
-            var inventoryItems = Dalamud.GameData
-                .GetExcelSheet<MJIItemPouch>()!
-                .Select(i => new InventoryItem(i.RowId, itemData.GetRow(i.Item.Row)?.Name.ToString() ?? string.Empty))
+            var inventoryItemCategories = Dalamud.GameData
+                .GetExcelSheet<MJIItemCategory>()!
+                .Select(x => new InventoryItemCategory(x.RowId, x.Unknown0.ToString()))
                 .ToList();
+
+            inventoryItems = Dalamud.GameData
+                .GetExcelSheet<MJIItemPouch>()!
+                .Select(i => new InventoryItem(
+                    i.RowId,
+                    itemData.GetRow(i.Item.Row)?.Name.ToString() ?? string.Empty,
+                    inventoryItemCategories.First(x => x.Id == i.Unknown1)
+                ))
+                .ToArray();
 
             var craftworksObjects = Dalamud.GameData
                 .GetExcelSheet<MJICraftworksObject>()!
@@ -86,11 +112,6 @@ namespace AutoMammetHQ
             }
 
             this.handicrafts = handicrafts.ToArray();
-        }
-
-        internal Handicraft[] GetHandicrafts()
-        {
-            return handicrafts.ToArray();
         }
 
         internal unsafe bool IsSupplyAndDemandAvailable()

@@ -1,12 +1,12 @@
 namespace AutoMammetHQ.Data
 {
-    internal class Category
+    internal class InventoryItemCategory
     {
         public uint Id { get; }
         
         public string Name { get; }
 
-        public Category(uint id, string name)
+        public InventoryItemCategory(uint id, string name)
         {
             Id = id;
             Name = name;

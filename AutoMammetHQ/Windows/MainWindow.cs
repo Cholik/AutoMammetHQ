@@ -38,9 +38,34 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
+        //var inventoryItems = reader.InventoryItems;
+
+        //int i = 0;
+
+        //foreach (var inventoryItem in inventoryItems.Where(x => x.Category.Id == 4))
+        //{
+        //    bool apa = false;
+
+        //    if (ImGui.Checkbox(inventoryItem.Name, ref apa))
+        //    {
+        //        var bepa = apa;
+        //    }
+
+        //    if (i++ % 4 != 3)
+        //    {
+        //        ImGui.SameLine();
+        //    }
+        //}
+
+        ImGui.Spacing();
+        ImGui.Separator();
+        ImGui.Spacing();
+
         if (DateTime.UtcNow >= nextSupplyAndDemandUpdateTime)
         {
             ImGui.Text("Please open the supply and demand window in order to load the current supply and demand for export.");
+            ImGui.Text($"Next time: {nextSupplyAndDemandUpdateTime}");
+            ImGui.Text($"IsSupplyAndDemandAvailable: {reader.IsSupplyAndDemandAvailable()}");
 
             ImGui.Spacing();
             ImGui.Separator();
@@ -51,7 +76,7 @@ public class MainWindow : Window, IDisposable
                 nextSupplyAndDemandUpdateTime = DateTime.SpecifyKind(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 8, 0, 0), DateTimeKind.Utc);
 
-                if (DateTime.UtcNow.Hour > 8)
+                if (DateTime.UtcNow.TimeOfDay > new TimeSpan(8, 0, 0))
                 {
                     nextSupplyAndDemandUpdateTime = nextSupplyAndDemandUpdateTime.AddDays(1);
                     schedulesUpdated = false;
@@ -63,7 +88,7 @@ public class MainWindow : Window, IDisposable
             if (ImGui.Button("Get schedule for tomorrow"))
             {
                 var supplyAndDemand = reader.GetSupplyAndDemand();
-                handicrafts = reader.GetHandicrafts();
+                handicrafts = reader.Handicrafts;
 
                 scheduleHandler = new ScheduleHandler(handicrafts, supplyAndDemand);
                 schedules = scheduleHandler.GetSchedules();
@@ -141,7 +166,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableNextRow();
 
                 ImGui.TableSetColumnIndex(0);
-                TextRightAligned(material.Amount.ToString());
+                TextRightAligned((material.Amount * 3).ToString());
 
                 ImGui.TableSetColumnIndex(1);
                 ImGui.Text(material.InventoryItem.Name);

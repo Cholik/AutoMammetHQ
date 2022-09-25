@@ -2,10 +2,11 @@ namespace AutoMammetHQ.Data
 {
     internal enum DemandShift
     {
-        Skyrocketing = 2,
+        Any = -1,
+        Skyrocketing = 0,
         Increasing = 1,
-        None = 0,
-        Decreasing = -1,
-        Plummeting = -2
+        None = 2,
+        Decreasing = 3,
+        Plummeting = 4
     }
 }

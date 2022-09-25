@@ -6,10 +6,13 @@ namespace AutoMammetHQ.Data
 
         public string Name { get; }
 
-        public InventoryItem(uint id, string name)
+        public InventoryItemCategory Category { get;  }
+
+        public InventoryItem(uint id, string name, InventoryItemCategory category)
         {
             Id = id;
             Name = name;
+            Category = category;
         }
     }
 }

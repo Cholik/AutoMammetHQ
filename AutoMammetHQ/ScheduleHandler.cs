@@ -62,11 +62,6 @@ namespace AutoMammetHQ
             var schedules = new List<Schedule>();
             var lastHandicraft = scheduleHandicrafts.Last();
 
-            var apa = handicrafts
-                .Where(x => x.Id != lastHandicraft.Id &&
-                            x.Categories.Intersect(lastHandicraft.Categories).Any())
-                .ToList();
-
             foreach (var nextHandicraft in handicrafts
                 .Where(x => x.Id != lastHandicraft.Id &&
                             x.Categories.Intersect(lastHandicraft.Categories).Any()))
@@ -103,9 +98,15 @@ namespace AutoMammetHQ
 
             for (int i = 0; i < handicrafts.Count(); i++)
             {
+                var supplyDemand = supplyAndDemand.First(x => x.Handicraft == handicrafts[i]);
+
                 int efficiencyModifier = i == 0 ? 1 : 2;
-                var supplyModifier = supplyModifiers[supplyAndDemand.First(x => x.Handicraft == handicrafts[i]).Supply];
-                var demandModifier = popularityModifiers[supplyAndDemand.First(x => x.Handicraft == handicrafts[i]).Popularity];
+
+                var supplyModifier = supplyDemand.Supply == Supply.Insufficient && supplyDemand.DemandShift == DemandShift.Skyrocketing
+                    ? supplyModifiers[Supply.Nonexistent]
+                    : supplyModifiers[Supply.Sufficient];
+                var demandModifier = popularityModifiers[supplyDemand.Popularity];
+
                 decimal grooveModifier = 1 + ((decimal)groove / 100);
 
                 score += handicrafts[i].BasePrice * efficiencyModifier * supplyModifier * demandModifier * grooveModifier;

@@ -10,7 +10,7 @@ namespace AutoMammetHQ.Data
 
         public int BasePrice { get; }
 
-        public Category[] Categories { get; }
+        public HandicraftCategory[] Categories { get; }
 
         public Material[] Materials { get;  }
 
@@ -19,7 +19,7 @@ namespace AutoMammetHQ.Data
             string name,
             int craftingTime,
             int basePrice,
-            Category[] categories,
+            HandicraftCategory[] categories,
             Material[] materials)
         {
             Id = id;
