@@ -1,8 +1,8 @@
 {
     "Author": "Offworld Mining Company",
     "Name": "AutoMammet (HQ)",
-    "Punchline": "Calculates the optimal schedule for your Island Sanctuary workshops.",
-    "Description": "Calculates the optimal schedule for the next cycle of your Island Sanctuary Workshops, without the need for going via a spreadsheet.",
+    "Punchline": "Calculates a good enough schedule for your Island Sanctuary workshops.",
+    "Description": "Calculates a good enough schedule for the next cycle of your Island Sanctuary workshops.",
     "InternalName": "autoMammetHq",
     "ApplicableVersion": "any",
     "Tags": [

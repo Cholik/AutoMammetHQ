@@ -1,7 +1,7 @@
 # AutoMammet (HQ)
 _**This plugin is very likely forbidden by the TOS, do not use!**_
 
-AutoMammet (HQ) calculates the optimal schedule for the next cycle of your Island Sanctuary workshops, without the need for any spreadsheets.
+AutoMammet (HQ) calculates a good enough schedule for the next cycle of your Island Sanctuary workshops, without the need for any spreadsheets.
 
 Use the `/mammethq` command to bring up the AutoMammet HQ window. Click on the button 'Get schedule for tomorrow' to get tomorrows schedule. That's all there is to it.
 

@@ -2,8 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using AutoMammetHQ.Data;
-using Dalamud.Plugin;
+using AutoMammetHQ.Model;
 using Dalamud.Utility.Signatures;
 using Lumina.Excel.GeneratedSheets;
 

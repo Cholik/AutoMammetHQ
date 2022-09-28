@@ -1,4 +1,4 @@
-namespace AutoMammetHQ.Data
+namespace AutoMammetHQ.Model
 {
     internal class Handicraft
     {

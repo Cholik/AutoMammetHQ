@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using AutoMammetHQ.Data;
+using AutoMammetHQ.Model;
 using Dalamud.Interface.Windowing;
 using ImGuiNET;
 
@@ -38,38 +38,9 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
-        //var inventoryItems = reader.InventoryItems;
-
-        //int i = 0;
-
-        //foreach (var inventoryItem in inventoryItems.Where(x => x.Category.Id == 4))
-        //{
-        //    bool apa = false;
-
-        //    if (ImGui.Checkbox(inventoryItem.Name, ref apa))
-        //    {
-        //        var bepa = apa;
-        //    }
-
-        //    if (i++ % 4 != 3)
-        //    {
-        //        ImGui.SameLine();
-        //    }
-        //}
-
-        ImGui.Spacing();
-        ImGui.Separator();
-        ImGui.Spacing();
-
         if (DateTime.UtcNow >= nextSupplyAndDemandUpdateTime)
         {
             ImGui.Text("Please open the supply and demand window in order to load the current supply and demand for export.");
-            ImGui.Text($"Next time: {nextSupplyAndDemandUpdateTime}");
-            ImGui.Text($"IsSupplyAndDemandAvailable: {reader.IsSupplyAndDemandAvailable()}");
-
-            ImGui.Spacing();
-            ImGui.Separator();
-            ImGui.Spacing();
 
             if (reader.IsSupplyAndDemandAvailable())
             {
@@ -96,23 +67,20 @@ public class MainWindow : Window, IDisposable
                 schedulesUpdated = true;
             }
 
-            ImGui.SameLine();
-
-            ImGui.Text("(This might take some time.)");
-
             if (schedulesUpdated && schedules == null)
             {
                 ImGui.Text("Tomorrow is a rest day.");
             }
             else if (schedules != null)
             {
-                var schedule = schedules.OrderByDescending(x => x.Score).First();
+                foreach (var schedule in schedules.OrderByDescending(x => x.Score).Take(3))
+                {
+                    ImGui.Spacing();
+                    ImGui.Separator();
+                    ImGui.Spacing();
 
-                DrawSchedule(schedule);
-
-                ImGui.Spacing();
-                ImGui.Separator();
-                ImGui.Spacing();
+                    DrawSchedule(schedule);
+                }
             }
         }
     }

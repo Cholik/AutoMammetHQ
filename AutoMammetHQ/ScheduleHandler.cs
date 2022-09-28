@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using AutoMammetHQ.Data;
+using System.Threading.Tasks;
+using AutoMammetHQ.Model;
 
 namespace AutoMammetHQ
 {
@@ -49,10 +50,10 @@ namespace AutoMammetHQ
 
             var schedules = new List<Schedule>();
 
-            foreach (var handicraft in handicrafts)
+            Parallel.ForEach(handicrafts, handicraft =>
             {
                 schedules.AddRange(GetSchedules(new List<Handicraft> { handicraft }));
-            }
+            });
 
             return schedules;
         }

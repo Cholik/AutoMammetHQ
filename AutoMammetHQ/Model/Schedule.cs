@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace AutoMammetHQ.Data
+namespace AutoMammetHQ.Model
 {
     internal class Schedule : IEquatable<Schedule>
     {
