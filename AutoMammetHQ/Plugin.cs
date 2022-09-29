@@ -11,7 +11,7 @@ namespace AutoMammetHQ
     {
         private const string CommandName = "/mammethq";
 
-        public string Name => "AutoMammetHQ";
+        public string Name => "AutoMammet (HQ)";
 
         internal DalamudPluginInterface PluginInterface { get; init; }
 
@@ -19,7 +19,7 @@ namespace AutoMammetHQ
 
         public Configuration Configuration { get; init; }
 
-        public WindowSystem WindowSystem = new("AutoMammetHQ");
+        public WindowSystem WindowSystem = new("AutoMammet (HQ)");
 
         public Plugin(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -49,7 +49,7 @@ namespace AutoMammetHQ
 
         private void OnCommand(string command, string args)
         {
-            var window = WindowSystem.GetWindow("AutoMammetHQ");
+            var window = WindowSystem.GetWindow("AutoMammet (HQ)");
 
             if (window != null)
             {

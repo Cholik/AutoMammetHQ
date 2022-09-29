@@ -87,7 +87,7 @@ namespace AutoMammetHQ
             return schedules;
         }
 
-        int GetCycle(DateTime time)
+        public int GetCycle(DateTime time)
         {
             return (int)(time.AddDays(-2).AddHours(-8).DayOfWeek) + 1;
         }
