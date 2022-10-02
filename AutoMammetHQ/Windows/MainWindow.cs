@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using AutoMammetHQ.Model;
@@ -16,9 +15,8 @@ public class MainWindow : Window, IDisposable
     private bool schedulesUpdated = false;
 
     private Handicraft[] handicrafts;
-    private ScheduleHandler scheduleHandler;
-    private IEnumerable<Schedule>? schedules = null;
-    private int cycle = 0;
+    private ScheduleHandler? scheduleHandler;
+    private WorkshopSchedules? schedules;
 
     public MainWindow(Plugin plugin) : base(
         "AutoMammet (HQ)", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.AlwaysAutoResize)
@@ -30,6 +28,8 @@ public class MainWindow : Window, IDisposable
         };
 
         this.reader = new Reader(plugin);
+        
+        handicrafts = Array.Empty<Handicraft>();
     }
 
     public void Dispose()
@@ -48,7 +48,6 @@ public class MainWindow : Window, IDisposable
 
                 scheduleHandler = new ScheduleHandler(handicrafts, supplyAndDemand);
                 schedules = scheduleHandler.GetSchedules();
-                cycle = scheduleHandler.GetCycle(DateTime.UtcNow) + 1;
 
                 schedulesUpdated = true;
 
@@ -66,19 +65,19 @@ public class MainWindow : Window, IDisposable
                 ImGui.Text("Please open the Supply & Demand window in the Workshop Agenda.");
             }
         }
-        else
+        else if (schedules != null)
         {
-            if (schedulesUpdated && schedules == null)
+            if (schedulesUpdated && schedules.IsRestDay)
             {
                 ImGui.Text("Tomorrow is a rest day.");
             }
-            else if (schedules != null)
+            else if (schedules.Schedules.Any())
             {
-                ImGui.Text($"Schedules for cycle {cycle}.");
+                ImGui.Text($"Schedules for cycle {schedules.Cycle}.");
 
-                bool first = true;
+                var first = true;
 
-                foreach (var schedule in schedules.OrderByDescending(x => x.Score).Take(3))
+                foreach (var schedule in schedules.Schedules.OrderByDescending(x => x.Score).Take(3))
                 {
                     DrawSchedule(schedule, first);
 
@@ -92,7 +91,7 @@ public class MainWindow : Window, IDisposable
         }
     }
 
-    private void DrawSchedule(Schedule schedule, bool first)
+    private static void DrawSchedule(WorkshopSchedule schedule, bool first)
     {
         //ImGui.Text($"Score: {schedule.Score:0}");
 
@@ -106,7 +105,7 @@ public class MainWindow : Window, IDisposable
                 ImGui.TableSetupColumn("Categories", ImGuiTableColumnFlags.None, 240);
                 ImGui.TableHeadersRow();
 
-                for (int i = 0; i < schedule.Handicrafts.Length; i++)
+                for (var i = 0; i < schedule.Handicrafts.Length; i++)
                 {
                     ImGui.TableNextRow();
 

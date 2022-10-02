@@ -1,18 +1,24 @@
+using System;
+
 namespace AutoMammetHQ.Model
 {
     internal class Handicraft
     {
         public uint Id { get; }
 
-        public string Name { get; }
+        public string Name { get; } = string.Empty;
 
         public int CraftingTime { get; }
 
         public int BasePrice { get; }
 
-        public HandicraftCategory[] Categories { get; }
+        public HandicraftCategory[] Categories { get; } = Array.Empty<HandicraftCategory>();
 
-        public Material[] Materials { get;  }
+        public Material[] Materials { get; } = Array.Empty<Material>();
+
+        public Handicraft()
+        {
+        }
 
         public Handicraft(
             uint id,

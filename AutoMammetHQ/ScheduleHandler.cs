@@ -11,9 +11,9 @@ namespace AutoMammetHQ
         private readonly Handicraft[] handicrafts;
         private readonly SupplyAndDemand[] supplyAndDemand;
 
-        private int currentGroove;
+        private readonly int currentGroove;
 
-        private Dictionary<Supply, decimal> supplyModifiers = new Dictionary<Supply, decimal>()
+        private readonly Dictionary<Supply, decimal> supplyModifiers = new()
         {
             {  Supply.Nonexistent, 1.6M },
             {  Supply.Insufficient, 1.3M },
@@ -22,7 +22,7 @@ namespace AutoMammetHQ
             {  Supply.Overflowing, 0.6M },
         };
 
-        private Dictionary<Popularity, decimal> popularityModifiers = new Dictionary<Popularity, decimal>()
+        private readonly Dictionary<Popularity, decimal> popularityModifiers = new()
         {
             {  Popularity.VeryHigh, 1.4M },
             {  Popularity.High, 1.2M },
@@ -39,28 +39,28 @@ namespace AutoMammetHQ
             currentGroove = 0;
         }
 
-        internal IEnumerable<Schedule>? GetSchedules()
+        internal WorkshopSchedules GetSchedules()
         {
-            var cycle = GetCycle(DateTime.UtcNow);
+            var cycle = GetNextCycle(DateTime.UtcNow);
+            var schedules = new List<WorkshopSchedule>();
 
             if (cycle == 7)
             {
-                return null;
+                return new WorkshopSchedules(schedules, cycle, true);
             }
 
-            var schedules = new List<Schedule>();
 
             Parallel.ForEach(handicrafts, handicraft =>
             {
                 schedules.AddRange(GetSchedules(new List<Handicraft> { handicraft }));
             });
 
-            return schedules;
+            return new WorkshopSchedules(schedules, cycle, false);
         }
 
-        private IEnumerable<Schedule> GetSchedules(IEnumerable<Handicraft> scheduleHandicrafts)
+        private IEnumerable<WorkshopSchedule> GetSchedules(IEnumerable<Handicraft> scheduleHandicrafts)
         {
-            var schedules = new List<Schedule>();
+            var schedules = new List<WorkshopSchedule>();
             var lastHandicraft = scheduleHandicrafts.Last();
 
             foreach (var nextHandicraft in handicrafts
@@ -80,39 +80,58 @@ namespace AutoMammetHQ
                 else if (craftingTime == 24)
                 {
                     var score = ComputeScore(handicraftList);
-                    schedules.Add(new Schedule(handicraftList, score));
+                    schedules.Add(new WorkshopSchedule(handicraftList, score));
                 }
             }
 
             return schedules;
         }
 
-        public int GetCycle(DateTime time)
+        private static int GetNextCycle(DateTime time)
         {
-            return (int)(time.AddDays(-2).AddHours(-8).DayOfWeek) + 1;
+            return (int)(time.AddDays(-1).AddHours(-8).DayOfWeek) + 1;
         }
 
         private decimal ComputeScore(List<Handicraft> handicrafts)
         {
+            var usedHandicrafts = new Dictionary<Handicraft, (int Count, SupplyAndDemand SupplyAndDemand)>();
+
             decimal score = 0;
-            int groove = currentGroove;
+            var groove = currentGroove;
 
-            for (int i = 0; i < handicrafts.Count(); i++)
+            for (var i = 0; i < handicrafts.Count; i++)
             {
-                var supplyDemand = supplyAndDemand.First(x => x.Handicraft == handicrafts[i]);
+                SupplyAndDemand supplyDemand;
 
-                int efficiencyModifier = i == 0 ? 1 : 2;
+                if (!usedHandicrafts.ContainsKey(handicrafts[i]))
+                {
+                    supplyDemand = new SupplyAndDemand(supplyAndDemand.First(x => x.Handicraft == handicrafts[i]));
+                    usedHandicrafts.Add(handicrafts[i], (0, supplyDemand));
+                }
+                else
+                {
+                    (_, supplyDemand) = usedHandicrafts[handicrafts[i]];
+                }
+
+                var efficiencyModifier = i == 0 ? 1 : 2;
 
                 var supplyModifier = supplyDemand.Supply == Supply.Insufficient && supplyDemand.DemandShift == DemandShift.Skyrocketing
                     ? supplyModifiers[Supply.Nonexistent]
                     : supplyModifiers[Supply.Sufficient];
                 var demandModifier = popularityModifiers[supplyDemand.Popularity];
 
-                decimal grooveModifier = 1 + ((decimal)groove / 100);
+                var grooveModifier = 1 + ((decimal)groove / 100);
 
                 score += handicrafts[i].BasePrice * efficiencyModifier * supplyModifier * demandModifier * grooveModifier;
 
                 groove++;
+
+                usedHandicrafts[handicrafts[i]] = (usedHandicrafts[handicrafts[i]].Count + 1, supplyDemand);
+    
+                if (usedHandicrafts[handicrafts[i]].Count >= 2 && (int)supplyDemand.Supply < 4)
+                {
+                    supplyDemand.Supply++;
+                }
             }
 
             return score;

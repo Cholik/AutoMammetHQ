@@ -119,7 +119,7 @@ namespace AutoMammetHQ
 
             var sheet = Dalamud.GameData.GetExcelSheet<MJICraftworksPopularity>()!;
 
-            for (var i = 1; i <= handicrafts.Count(); ++i)
+            for (var i = 1; i <= handicrafts.Length; ++i)
             {
                 var supply = *(byte*)(instance + 0x2EA + i);
                 var shift = supply & 0x7;
@@ -150,7 +150,7 @@ namespace AutoMammetHQ
             var currentPopularity = sheet.GetRow(*(byte*)(instance + 0x2E8))!;
             var nextPopularity = sheet.GetRow(*(byte*)(instance + 0x2E9))!;
 
-            for (var i = 1; i <= handicrafts.Count(); ++i)
+            for (var i = 1; i <= handicrafts.Length; ++i)
             {
                 var supply = *(byte*)(instance + 0x2EA + i);
                 var shift = supply & 0x7;

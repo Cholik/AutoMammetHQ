@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace AutoMammetHQ.Model
 {
-    internal class Schedule : IEquatable<Schedule>
+    internal class WorkshopSchedule : IEquatable<WorkshopSchedule>
     {
         public Handicraft[] Handicrafts { get; set; }
 
         public decimal Score { get; }
 
-        public Schedule(IEnumerable<Handicraft> handicrafts, decimal score)
+        public WorkshopSchedule(IEnumerable<Handicraft> handicrafts, decimal score)
         {
             Handicrafts = handicrafts.ToArray();
             Score = score;
@@ -18,10 +18,10 @@ namespace AutoMammetHQ.Model
 
         public override bool Equals(object? obj)
         {
-            return Equals(obj as Schedule);
+            return Equals(obj as WorkshopSchedule);
         }
 
-        public bool Equals(Schedule? other)
+        public bool Equals(WorkshopSchedule? other)
         {
             return other != null &&
                 Enumerable.SequenceEqual(
@@ -31,11 +31,11 @@ namespace AutoMammetHQ.Model
 
         public override int GetHashCode()
         {
-            int hash = 17;
+            var hash = 17;
 
             foreach (var handicraft in Handicrafts.OrderBy(x => x.Name))
             {
-                hash = hash * 23 + handicraft.GetHashCode();
+                hash = (hash * 23) + handicraft.GetHashCode();
             }
 
             return hash;
