@@ -44,7 +44,7 @@ namespace AutoMammetHQ
             var cycle = GetNextCycle(DateTime.UtcNow);
             var schedules = new List<WorkshopSchedule>();
 
-            if (cycle == 7)
+            if (cycle == 1)
             {
                 return new WorkshopSchedules(schedules, cycle, true);
             }

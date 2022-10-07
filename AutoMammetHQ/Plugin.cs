@@ -9,7 +9,7 @@ namespace AutoMammetHQ
 {
     public sealed class Plugin : IDalamudPlugin
     {
-        private const string CommandName = "/mammethq";
+        private readonly string[] commandNames = new string[] { "/automammethq", "/mammethq" };
 
         public string Name => "AutoMammet (HQ)";
 
@@ -33,10 +33,13 @@ namespace AutoMammetHQ
 
             WindowSystem.AddWindow(new MainWindow(this));
 
-            this.CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
+            foreach (var commandName in commandNames)
             {
-                HelpMessage = "Open up the exporting UI/Interface."
-            });
+                this.CommandManager.AddHandler(commandName, new CommandInfo(OnCommand)
+                {
+                    HelpMessage = "Open up the exporting UI/Interface."
+                });
+            }
 
             this.PluginInterface.UiBuilder.Draw += DrawUI;
         }
@@ -44,7 +47,11 @@ namespace AutoMammetHQ
         public void Dispose()
         {
             this.WindowSystem.RemoveAllWindows();
-            this.CommandManager.RemoveHandler(CommandName);
+
+            foreach (var commandName in commandNames)
+            {
+                this.CommandManager.RemoveHandler(commandName);
+            }
         }
 
         private void OnCommand(string command, string args)

@@ -12,7 +12,6 @@ public class MainWindow : Window, IDisposable
     private readonly Reader reader;
 
     private DateTime nextSupplyAndDemandUpdateTime = DateTime.UtcNow;
-    private bool schedulesUpdated = false;
 
     private Handicraft[] handicrafts;
     private ScheduleHandler? scheduleHandler;
@@ -49,15 +48,12 @@ public class MainWindow : Window, IDisposable
                 scheduleHandler = new ScheduleHandler(handicrafts, supplyAndDemand);
                 schedules = scheduleHandler.GetSchedules();
 
-                schedulesUpdated = true;
-
                 nextSupplyAndDemandUpdateTime = DateTime.SpecifyKind(
                     new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, 8, 0, 0), DateTimeKind.Utc);
 
                 if (DateTime.UtcNow.TimeOfDay > new TimeSpan(8, 0, 0))
                 {
                     nextSupplyAndDemandUpdateTime = nextSupplyAndDemandUpdateTime.AddDays(1);
-                    schedulesUpdated = false;
                 }
             }
             else
@@ -67,7 +63,7 @@ public class MainWindow : Window, IDisposable
         }
         else if (schedules != null)
         {
-            if (schedulesUpdated && schedules.IsRestDay)
+            if (schedules.IsRestDay)
             {
                 ImGui.Text("Tomorrow is a rest day.");
             }
@@ -86,7 +82,7 @@ public class MainWindow : Window, IDisposable
             }
             else
             {
-                ImGui.Text($"Something went wrong, schedules == null = {schedules == null}");
+                ImGui.Text("Something went wrong");
             }
         }
     }
@@ -95,7 +91,7 @@ public class MainWindow : Window, IDisposable
     {
         //ImGui.Text($"Score: {schedule.Score:0}");
 
-        if (ImGui.CollapsingHeader($"Score: {schedule.Score:0}", first ? ImGuiTreeNodeFlags.None : ImGuiTreeNodeFlags.None))
+        if (ImGui.CollapsingHeader($"Score: {schedule.Score:0}", first ? ImGuiTreeNodeFlags.DefaultOpen : ImGuiTreeNodeFlags.None))
         {
             if (ImGui.BeginTable("Schedule", 4))
             {
