@@ -3,8 +3,8 @@
     "Name": "AutoMammet (HQ)",
     "Punchline": "Calculates a good enough schedule for your Island Sanctuary workshops.",
     "Description": "Calculates a good enough schedule for the next cycle of your Island Sanctuary workshops.",
-    "InternalName": "autoMammetHq",
-    "AssemblyVersion": "1.0.0",
+    "InternalName": "AutoMammetHQ",
+    "AssemblyVersion": "1.0.1",
     "ApplicableVersion": "any",
     "Tags": [
         "island sanctuary",

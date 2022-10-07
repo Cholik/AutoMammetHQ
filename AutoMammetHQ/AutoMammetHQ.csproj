@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Authors>Offworld Mining Company</Authors>
     <Company>N/A</Company>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.1.0</Version>
     <Description>Calculates a good enough schedule for your Island Sanctuary workshops.</Description>
     <Copyright>N/A</Copyright>
     <PackageProjectUrl>https://github.com/OffworldMiningCompany/AutoMammetHQ</PackageProjectUrl>
